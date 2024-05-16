@@ -231,6 +231,92 @@
         </div>
         <!-- Contact End -->
 
+        <div class="container py-5">
+            <div class="text-center">
+                <h1 class="text-primary mb-4">Create Project Form</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <form id="createProjectForm">
+                        <div class="form-group">
+                            <label for="token">Token:</label>
+                            <input type="text" class="form-control" id="token" placeholder="Enter your Git token">
+                            <small class="form-text text-muted">Ensure this token has the necessary permissions.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="url">URL:</label>
+                            <input type="text" class="form-control" id="url" placeholder="https://git.example.com">
+                            <button type="button" class="btn btn-primary mt-3" onclick="testConnection()">Test Connection</button>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <label for="projectTitle">Project Title:</label>
+                                <input type="text" class="form-control" id="projectTitle" placeholder="Enter your project title">
+                            </div>
+                            <div class="col">
+                                <label for="typeProject">Type of Project:</label>
+                                <select class="form-control" id="typeProject">
+                                    <option value="" disabled selected>Select type of project</option>
+                                    <option value="Typo3">Typo3</option>
+                                    <option value="WordPress">WordPress</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="versionProject">Version:</label>
+                            <select class="form-control" id="versionProject">
+                                <option value="" disabled selected>Select version</option>
+                                <option value="1.0">1.0</option>
+                                <option value="2.0">2.0</option>
+                                <option value="3.0">3.0</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="group">Group of the Project:</label>
+                            <input type="text" class="form-control" id="group" placeholder="Enter group name">
+                            <small class="form-text text-muted">A new group will be created if the name doesn't exist.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">User Email:</label>
+                            <input type="text" class="form-control" id="userEmail" placeholder="Enter user email">
+                        </div>
+                        <div class="form-group">
+                            <label for="rolesDropdown">Roles:</label>
+                            <select class="form-control" id="rolesDropdown">
+                                <option value="" disabled selected>Select Role</option>
+                                <option value="Guest">Guest</option>
+                                <option value="Reporter">Reporter</option>
+                                <option value="Developer">Developer</option>
+                                <option value="Maintainer">Maintainer</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="validateAndSave()">Add User</button>
+                        <hr>
+                        <div class="form-group">
+                            <label for="storedData">Stored Data:</label>
+                            <table class="table" id="storedData">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="createProject()">Create Project</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
 
         <!-- Footer Start -->
          <div class="container-fluid footer bg-dark wow fadeIn" data-wow-delay=".3s">
