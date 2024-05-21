@@ -21,5 +21,60 @@ def home():
 
 
 
+
+
+@app.route('/gitlab')
+def gitlab():
+    return render_template('gitlab.html')
+
+
+
+@app.route('/ssh_implement')
+def ssh_implement():
+    return render_template('ssh_cnx_implement.html')
+
+@app.route('/run_script', methods=['POST'])
+def run_script():
+    token = request.form.get('token')
+    url = request.form.get('url')
+    project_title = request.form.get('projectTitle')
+    group = request.form.get('group')
+
+  
+    script_path = os.path.join(os.path.dirname(__file__), 'scripts', 'gitlab_repo.py')
+    try:
+        try:
+            result = subprocess.run([ script_path, '-t', token, '-u', url, '-p', project_title, '-g', group], capture_output=True, text=True, check=True)
+            output = result.stdout
+        except subprocess.CalledProcessError as e:
+            output = f"Error: {e.stderr}"
+    
+        return jsonify({'output': output})
+    except Exception as e:
+       
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/add_users', methods=['POST'])
+def add_users():
+    token = request.form.get('token')
+    url = request.form.get('url')
+    project_title = request.form.get('projectTitle')
+    emails = request.form.get('emails')
+    roles = request.form.get('roles')
+
+  
+    script_path = os.path.join(os.path.dirname(__file__), 'scripts', 'add_users_project.py')
+    try:
+        try:
+            result = subprocess.run([ script_path, '-t', token, '-u', url, '-p', project_title, '-e', emails , '-r' , roles], capture_output=True, text=True, check=True)
+            output = result.stdout
+        except subprocess.CalledProcessError as e:
+            output = f"Error: {e.stderr}"
+    
+        return jsonify({'output': output})
+    except Exception as e:
+     
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

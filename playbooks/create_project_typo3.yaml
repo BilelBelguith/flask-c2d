@@ -1,0 +1,50 @@
+---
+- name: Install and configure TYPO3 with Composer
+  hosts: web_servers
+  become: yes
+
+  vars:
+    project_path: /var/www/html
+    project_name: test02
+    project_version: 10
+    composer_path: /usr/local/bin/composer
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - libapache2-mod-php
+        - unzip
+
+    - name: Download and install TYPO3 via Composer
+      command: "{{ composer_path }} create-project typo3/cms-base-distribution:^{{ project_version }} {{ project_path }}/{{ project_name }}"
+      become: yes
+      args:
+        creates: "{{ project_path }}/{{ project_name }}/composer.json"
+
+    - name: Set ownership and permissions
+      file:
+        path: "{{ project_path }}/{{ project_name }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: yes
+      become: yes
+
+    - name: Configure Apache virtual host
+      template:
+        src: "../templates/apache_vhost.conf.j2"
+        dest: "/etc/apache2/sites-available/{{ project_name }}.conf"
+      notify:
+        - Reload Apache
+
+    - name: Enable Apache site
+      command: a2ensite {{ project_name }}
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
