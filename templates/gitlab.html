@@ -142,12 +142,12 @@
 
       
 
-        <div class="p-5 rounded contact-form"  >
+        <div class="p-5 rounded "  >
             <div class="text-center">
                 <h1 class="text-primary mb-4">Create Project Form</h1>
             </div>
             <div class="row justify-content-center">
-                <div class="col-lg-8">
+                <div class="col-lg-6">
                     <form id="createProjectForm">
                         <div class="form-group">
                             <label for="token" >Token:</label>
@@ -192,7 +192,7 @@
                         <div class="form-group">
                             <label for="userEmail">User Email:</label>
                             <input type="text" class="form-control" id="userEmail" placeholder="Enter user email" list="userList" oninput="filterUsers()">
-                            <datalist id="userList"></datalist>
+                            <datalist  id="userList"></datalist>
                         </div>
                         <div class="form-group">
                             <label for="rolesDropdown">Roles:</label>
@@ -211,7 +211,7 @@
 
 
                         <div id = "storedData" class="form-group">
-                            <label for="storedData">Stored Data:</label>
+                            <label for="storedData">Stored Users:</label>
                             <table class="table" id="dataTable" style="color: #1842b6 ;">
                                 <thead>
                                     <tr>
@@ -518,7 +518,9 @@
         
           async function fetchAllUsers() {
               const userList = document.getElementById('userList');
-              
+              userList.innerHTML = '';
+
+              let allUsers  = [];
         
               let page = 1;
               let totalPages = 1;

@@ -26,7 +26,9 @@ def home():
 @app.route('/gitlab')
 def gitlab():
     return render_template('gitlab.html')
-
+@app.route('/gitlab003')
+def gitlab003():
+    return render_template('gitlab003.html')
 
 
 @app.route('/ssh_implement')
