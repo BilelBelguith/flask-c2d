@@ -36,11 +36,17 @@
                 
             }
             .modal-content {
-                background: #1842b6 ; /* Slightly transparent white background */
+                background: #003ae72a ; /* Slightly transparent white background */
             
                 margin: auto;
             }
-    
+            .hover-shadow img {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .hover-shadow img:hover {
+            transform: scale(1.2);
+            box-shadow: 0 8px 16px rgba(231, 231, 231, 0);
+        }
         </style>
     </head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -153,14 +159,14 @@
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Select Your Git</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel" style="color: white; ">Select Your Git</h5>
                                         
                                     </div>
                                     <div class="modal-body">
                                         <div class="d-flex justify-content-around">
-                                            <a href="/gitlab"><img src="static/img/gitlab001.png" class="img-fluid" alt="Image 1"></a>
-                                            <a href=""><img src="static/img/github001.png" class="img-fluid" alt="Image 2"></a>
-                                            <a href=""><img src="static/img/bitbucket001.png" class="img-fluid" alt="Image 3"></a>
+                                            <a href="/gitlab"  class="hover-shadow" style="padding-right: 40px;"><img src="static/img/gitlab001.png" class="img-fluid" alt="Image 1"></a>
+                                            <a href="" class="hover-shadow" style="padding-right: 40px;"><img src="static/img/github001.png" class="img-fluid" alt="Image 2"></a>
+                                            <a href="" class="hover-shadow" style="padding-right: 40px;"><img src="static/img/bitbucket001.png" class="img-fluid" alt="Image 3"></a>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
