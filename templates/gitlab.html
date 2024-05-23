@@ -9,9 +9,7 @@
         <meta content="" name="description">
 
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-d1p38EqFpwoN0lACFb3w5+7KsMjIpjxHyVU4/8UK3Is0bseubLM/KOy09lFJhx5SdXwm3Sd/2epz4SEjdD4q0w=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
       <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,6 +40,13 @@
             color: #1842b6  ;
             font-size: 18px;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        #spinner {
+            display: none;
+        }
+
+        #spinner.show {
+            display: flex;
         }
      
     </style>
@@ -386,8 +391,11 @@
                 return;
               }
         
-              var loadingIndicator = document.getElementById('spinner');
-              loadingIndicator.style.display = 'block';
+              //var loadingIndicator = document.getElementById('spinner');
+              //loadingIndicator.style.display = 'block';
+
+              var spinner = document.getElementById('spinner');
+            spinner.classList.add('show');
         
               fetch('/run_script', {
                 method: 'POST',
@@ -400,7 +408,8 @@
                 .then(data => {
                   console.log('Response Data:', data);
         
-                  loadingIndicator.style.display = 'none';
+                  //loadingIndicator.style.display = 'none';
+                  spinner.classList.remove('show');
         
                   if (data.output && data.output.trim() === 'OK') {
                     add_users_to_project();
@@ -424,7 +433,7 @@
                   console.error('Error:', error);
                   alert('An error occurred. Please check the console for details.');
         
-                  loadingIndicator.style.display = 'none';
+                  spinner.classList.remove('show');
                 });
         
         
