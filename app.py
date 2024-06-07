@@ -31,9 +31,6 @@ def gitlab003():
     return render_template('gitlab003.html')
 
 
-@app.route('/ssh_implement')
-def ssh_implement():
-    return render_template('ssh_cnx_implement.html')
 
 @app.route('/run_script', methods=['POST'])
 def run_script():

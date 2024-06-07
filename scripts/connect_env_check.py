@@ -6,6 +6,7 @@
 import argparse
 import os
 import subprocess
+import pexpect
 
 parser = argparse.ArgumentParser(description='setup env , project , webserver')
 
@@ -47,8 +48,38 @@ except subprocess.CalledProcessError as e:
     print("Error running or writing to file:", e)
 
 
+def ssh_copy_id(username, server_address, password):
+    try:
+        # Construct the ssh-copy-id command
+        command = f'ssh-copy-id {username}@{server_address}'
 
-playbook_command = ["ansible-playbook", "../playbooks/env-check.yaml", "--extra-vars", f"ansible_ssh_pass={user_pass} ansible_sudo_pass={user_pass}"]
+        # Start the command using pexpect
+        child = pexpect.spawn(command)
+
+        # Handle the different expected outputs
+        index = child.expect(['Are you sure you want to continue connecting (yes/no)?', 'password:', pexpect.EOF, pexpect.TIMEOUT])
+
+        if index == 0:
+            # Accept the fingerprint
+            child.sendline('yes')
+            child.expect('password:')
+            child.sendline(password)
+        elif index == 1:
+            # Send the password
+            child.sendline(password)
+
+        # Print the output from the command
+        child.interact()
+
+    except pexpect.exceptions.ExceptionPexpect as e:
+        # Print the error if the command fails
+        print(f"Error: {str(e)}")
+
+
+#add_ssh_key = ["ssh-copy-id" f"{user_name}@{host_name}"]
+        
+ssh_copy_id(user_name, host_name, user_pass)     
+playbook_command = ["ansible-playbook", "../playbooks/env-check-typo3-project.yaml", "--extra-vars", f"ansible_ssh_pass={user_pass} ansible_sudo_pass={user_pass}" , "-v"]
 
 try:
     subprocess.run(playbook_command, check=True)

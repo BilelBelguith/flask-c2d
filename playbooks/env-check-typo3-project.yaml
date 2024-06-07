@@ -1,0 +1,104 @@
+---
+- name: Check TYPO3 Dependencies
+  hosts: web_servers
+  become: yes
+#  roles:
+#    - geerlingguy.php
+  vars:
+    typo3_requirements: "{{ lookup('file', './requirements') }}"  # Update path as needed
+   # typo3_requirements: "{{ lookup('file', './requirements') | from_json }}"
+   
+  tasks:
+
+    - name: Print the value of my_variable
+      debug:
+        msg: "The value of my_variable is: {{ typo3_requirements.php }}"
+
+    - name: Check PHP existence
+      command: which php
+      register: php_check
+      ignore_errors: true
+
+    - name: Check Composer existence
+      command: which composer
+      register: composer_check
+      ignore_errors: true
+
+    - name: Add PHP repository
+      ansible.builtin.apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+      register: add_repo_result
+      when: php_check.rc != 0
+
+    - name: Update apt package list
+      ansible.builtin.apt:
+        update_cache: yes
+      when: add_repo_result.changed
+
+#    - name: Check required PHP version
+#      command: php -v | grep -oP '\d+\.\d+' | head -n 1
+#      register: php_version
+
+      
+    - name: Install PHP 
+      package:
+        name: "{{ item }}"
+        state: present
+      become : yes
+      become_user: root
+      loop: "{{ typo3_requirements.php.split(',') }}"
+      when: php_check.rc != 0  
+      #or  php_version.stdout != typo3_requirements.php
+
+    - name: Install required PHP extensions
+      package:
+        name: "{{typo3_requirements.php}}-{{item}}"
+        state: present
+      loop: "{{ typo3_requirements.extensions }}"
+      #when: item not in typo3_requirements.extensions
+
+
+
+    - name: Install Composer (if needed)
+      get_url:
+        url: "https://getcomposer.org/installer"
+        dest: "/tmp/composer-setup.php"
+      when: composer_check.rc != 0
+
+#    - name: Check required Composer version
+#      command: composer -v |  grep -oP '\d+\.\d+'
+#      register: composer_version
+
+    - name: Run Composer Installer
+      command: "{{typo3_requirements.php}} /tmp/composer-setup.php --version {{ typo3_requirements.composer}} --install-dir=/usr/local/bin --filename=composer"
+      become: yes
+      become_user: root
+      when: composer_check.rc != 0 
+#or composer_version.stdout != typo3_requirements.composer
+
+
+
+#    - name: Update PHP (if needed)
+#      package:
+#        name: "{{ typo3_requirements.php }}"
+#        state: present
+#      when: php_version.stdout != typo3_requirements.php
+
+#    - name: Check required Composer version
+#      shell: "composer -v |  grep -oP '\\d+\\.\\d+' "
+#      register: composer_version
+#
+    - name: Update Composer 
+      command: composer self-update {{ typo3_requirements.composer }}
+      when: not composer_check.rc 
+
+
+#    - name: Display TYPO3 dependency check status
+#      debug:
+#        msg: "
+#          * PHP: {{ php_version.stdout if php_check.rc == 0 else 'Not Installed' }}
+#          * PHP-FPM: {{ '{{ ansible_phpfpm_version }}' if ansible_phpfpm_version is defined else 'Not Installed' }}  # Check for PHP-FPM version
+#          * Composer: {{ composer_version.stdout if composer_check.rc == 0 else 'Not Installed' }}
+#          * Missing Extensions: {% for ext in typo3_requirements.extensions.split(',') if not ext in (php -m | grep -w ' {{ ext }} ') %}{{ ext }}{% if not loop.last %}, {% endif %}{% endfor %}
+#        "
