@@ -8,6 +8,6 @@
       "mbstring",
       "gd",
       "cli"  
-    ],
+    ]
    
 }

@@ -2,11 +2,9 @@
 - name: Check TYPO3 Dependencies
   hosts: web_servers
   become: yes
-#  roles:
-#    - geerlingguy.php
+
   vars:
-    typo3_requirements: "{{ lookup('file', './requirements') }}"  # Update path as needed
-   # typo3_requirements: "{{ lookup('file', './requirements') | from_json }}"
+    typo3_requirements: "{{ lookup('file', './requirements') }}" 
    
   tasks:
 
@@ -35,12 +33,7 @@
       ansible.builtin.apt:
         update_cache: yes
       when: add_repo_result.changed
-
-#    - name: Check required PHP version
-#      command: php -v | grep -oP '\d+\.\d+' | head -n 1
-#      register: php_version
-
-      
+   
     - name: Install PHP 
       package:
         name: "{{ item }}"
@@ -58,41 +51,28 @@
       loop: "{{ typo3_requirements.extensions }}"
       #when: item not in typo3_requirements.extensions
 
-
-
+    - name: Create symbolic link for PHP
+      ansible.builtin.file:
+        src: /usr/bin/{{typo3_requirements.php}}
+        dest: /usr/bin/php
+        state: link
+        force: yes
+    
     - name: Install Composer (if needed)
       get_url:
         url: "https://getcomposer.org/installer"
         dest: "/tmp/composer-setup.php"
       when: composer_check.rc != 0
 
-#    - name: Check required Composer version
-#      command: composer -v |  grep -oP '\d+\.\d+'
-#      register: composer_version
-
     - name: Run Composer Installer
       command: "{{typo3_requirements.php}} /tmp/composer-setup.php --version {{ typo3_requirements.composer}} --install-dir=/usr/local/bin --filename=composer"
       become: yes
       become_user: root
       when: composer_check.rc != 0 
-#or composer_version.stdout != typo3_requirements.composer
 
-
-
-#    - name: Update PHP (if needed)
-#      package:
-#        name: "{{ typo3_requirements.php }}"
-#        state: present
-#      when: php_version.stdout != typo3_requirements.php
-
-#    - name: Check required Composer version
-#      shell: "composer -v |  grep -oP '\\d+\\.\\d+' "
-#      register: composer_version
-#
     - name: Update Composer 
       command: composer self-update {{ typo3_requirements.composer }}
       when: not composer_check.rc 
-
 
 #    - name: Display TYPO3 dependency check status
 #      debug:

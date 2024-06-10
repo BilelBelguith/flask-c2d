@@ -84,8 +84,8 @@ playbook_command = ["ansible-playbook", "../playbooks/env-check-typo3-project.ya
 try:
     subprocess.run(playbook_command, check=True)
     print("Env is well set.")
-except subprocess.CalledProcessError:
-    print("Env is not that good.")
+except subprocess.CalledProcessError as e:
+    print(f"Env is not that good: {str(e)}" )
 
 
     
