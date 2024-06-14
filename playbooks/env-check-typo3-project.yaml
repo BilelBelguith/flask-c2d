@@ -8,15 +8,15 @@
    
   tasks:
 
-    - name: Print the value of my_variable
-      debug:
-        msg: "The value of my_variable is: {{ typo3_requirements.php }}"
+#    - name: Print the value of my_variable
+#      debug:
+#        msg: "The value of my_variable is: {{ typo3_requirements.php }}"
 
     - name: Check PHP existence
       command: which php
       register: php_check
       ignore_errors: true
-
+#this work only for apt (check for yum and dnf ....)
     - name: Check Composer existence
       command: which composer
       register: composer_check

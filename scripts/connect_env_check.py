@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser(description='setup env , project , webserver')
 parser.add_argument('-u', '--userName', dest='user_name',nargs='+', help='user name for ssh cnx')
 parser.add_argument('-p', '--userPass', dest='user_pass',nargs='+', help='user password for ssh cnx')
 parser.add_argument('-s', '--hostName', dest='host_name',nargs='+', help='host name for ssh cnx')
-
+parser.add_argument('-d', '--port', dest='port',nargs='+')
 
 #check env depends on project type ( typo3 => coposer + php / fpm check)
 #                                    WP  => wordpress version / php fpm              
@@ -22,14 +22,15 @@ args = parser.parse_args()
 user_name=args.user_name[0]
 user_pass=args.user_pass[0]
 host_name=args.host_name[0]
+port=args.port[0]
 
 hosts_file_path = "/etc/ansible/hosts"
 password_file_path="../playbooks/pass.txt"
 
 hosts_content = """  
 [web_servers]
-web_server1 ansible_host=%s ansible_user=%s
-""" %(host_name,user_name)
+web_server1 ansible_host=%s ansible_port=%s ansible_user=%s
+""" %(host_name,port,user_name)
 
 try:
     # Read the password from the file

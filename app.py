@@ -26,9 +26,10 @@ def home():
 @app.route('/gitlab')
 def gitlab():
     return render_template('gitlab.html')
-@app.route('/gitlab003')
-def gitlab003():
-    return render_template('gitlab003.html')
+
+@app.route('/env-cnx')
+def envcnx():
+    return render_template('conex-env.html')
 
 
 
@@ -73,6 +74,30 @@ def add_users():
         return jsonify({'output': output})
     except Exception as e:
      
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/test_ssh', methods=['POST'])
+def test_ssh():
+    host = request.form.get('host')
+    port = request.form.get('port')
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    script_path = os.path.join(os.path.dirname(__file__), 'scripts','test_ssh_con.py')
+    try:
+        try:
+            result = subprocess.run(
+                [ script_path, '-s', host, '-u', username, '-p', password, '-d', port],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            output = result.stdout
+        except subprocess.CalledProcessError as e:
+            output = f"Error: {e.stderr}"
+
+        return jsonify({'output': output})
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
