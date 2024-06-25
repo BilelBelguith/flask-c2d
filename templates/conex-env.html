@@ -175,6 +175,20 @@
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary mt-3 col-lg-12" style="color: #26d48c;" onclick="test_ssh()">Test SSH Connection</button>
+                      
+                        <div class="form-group col-lg-3 mt-3">
+                            <label for="php-version">PHP Version</label>
+                            <select class="form-control" id="php-version">
+                                <option value="" disabled selected>Select PHP Version</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-3 mt-3">
+                            <label for="composer-version">Composer Version</label>
+                            <select class="form-control" id="composer-version">
+                                <option value="" disabled selected>Select Version</option>
+                            </select>
+                        </div>
+
                         <button type="button" class="btn btn-primary mt-3 col-lg-12" style="color: #26d48c;" onclick="">Create Project</button>
                     </form>
                 </div>
@@ -305,4 +319,41 @@ fetch('/test_ssh' , {
                 });
 
 }  
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    load_versions();
+});
+
+function load_versions(){
+    fetch('/versions', {
+        method: 'GET',
+    }).then(response => response.json())
+    .then(data => {
+ 
+        var phpVersionSelect = document.getElementById('php-version');
+        phpVersionSelect.innerHTML = '<option value="">PHP Version</option>'; // Clear previous options
+        data.php_versions.forEach(version => {
+            var option = document.createElement('option');
+            option.value = version;
+            option.textContent = version;
+            phpVersionSelect.appendChild(option);
+        });
+
+
+        var composerVersionSelect = document.getElementById('composer-version');
+        composerVersionSelect.innerHTML = '<option value="">Composer Version</option>'; // Clear previous options
+        data.composer_versions.forEach(version => {
+            var option = document.createElement('option');
+            option.value = version;
+            option.textContent = version;
+            composerVersionSelect.appendChild(option);
+        });
+    }).catch(error => {
+        console.error('Error loading versions:', error);
+        alert('Failed to load versions. Please check the console for details.');
+    });
+}
 </script>

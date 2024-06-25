@@ -1,0 +1,18 @@
+{
+    "extensions": [
+      "fpm",
+      "mysql",
+      "xml",
+      "cli" ,
+      "pdo",
+      "tokenizer",
+      "mbstring",
+      "intl",
+      "fileinfo",
+      "gd",
+      "zip",
+      "curl"
+
+
+    ]
+  }

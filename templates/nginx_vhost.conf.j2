@@ -1,0 +1,85 @@
+server {
+    listen 80;
+    server_name _;
+
+    root {{ project_path }}/{{ project_name }}/public;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    error_log /var/log/nginx/{{ project_name }}_error.log;
+    access_log /var/log/nginx/{{ project_name }}_access.log;
+}
+
+
+
+
+
+######################################################################################
+EXMPLE WITH SSL OR JUST TAKE IT FROM DEV JAVA OVH SERVER FOR BAKOMOTORS IT WORKS WELL
+######################################################################################
+
+
+
+
+server {
+    listen 80;
+    server_name {{ domain_name }};
+
+    root {{ project_path }}/{{ project_name }}/public;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    error_log /var/log/nginx/{{ project_name }}_error.log;
+    access_log /var/log/nginx/{{ project_name }}_access.log;
+}
+
+server {
+    listen 443 ssl;
+    server_name {{ domain_name }};
+
+    root {{ project_path }}/{{ project_name }}/public;
+    index index.php index.html index.htm;
+
+    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    error_log /var/log/nginx/{{ project_name }}_ssl_error.log;
+    access_log /var/log/nginx/{{ project_name }}_ssl_access.log;
+}

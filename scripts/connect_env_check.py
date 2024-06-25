@@ -13,7 +13,10 @@ parser = argparse.ArgumentParser(description='setup env , project , webserver')
 parser.add_argument('-u', '--userName', dest='user_name',nargs='+', help='user name for ssh cnx')
 parser.add_argument('-p', '--userPass', dest='user_pass',nargs='+', help='user password for ssh cnx')
 parser.add_argument('-s', '--hostName', dest='host_name',nargs='+', help='host name for ssh cnx')
-parser.add_argument('-d', '--port', dest='port',nargs='+')
+parser.add_argument('-d', '--port'    , dest='port'     ,nargs='+', help='port number for ssh cnx')
+parser.add_argument('--php' , dest='php_version' , nargs='+' , help='php version')
+parser.add_argument('--composer' , dest='composer_version' , nargs='+' , help='composer version')  
+
 
 #check env depends on project type ( typo3 => coposer + php / fpm check)
 #                                    WP  => wordpress version / php fpm              
@@ -23,6 +26,9 @@ user_name=args.user_name[0]
 user_pass=args.user_pass[0]
 host_name=args.host_name[0]
 port=args.port[0]
+php_version=args.php_version[0]
+composer_version=args.composer_version[0]
+
 
 hosts_file_path = "/etc/ansible/hosts"
 password_file_path="../playbooks/pass.txt"
@@ -54,33 +60,30 @@ def ssh_copy_id(username, server_address, password):
         # Construct the ssh-copy-id command
         command = f'ssh-copy-id {username}@{server_address}'
 
-        # Start the command using pexpect
         child = pexpect.spawn(command)
-
-        # Handle the different expected outputs
         index = child.expect(['Are you sure you want to continue connecting (yes/no)?', 'password:', pexpect.EOF, pexpect.TIMEOUT])
 
         if index == 0:
-            # Accept the fingerprint
             child.sendline('yes')
             child.expect('password:')
             child.sendline(password)
         elif index == 1:
-            # Send the password
             child.sendline(password)
 
-        # Print the output from the command
         child.interact()
 
     except pexpect.exceptions.ExceptionPexpect as e:
-        # Print the error if the command fails
         print(f"Error: {str(e)}")
 
 
 #add_ssh_key = ["ssh-copy-id" f"{user_name}@{host_name}"]
         
 ssh_copy_id(user_name, host_name, user_pass)     
-playbook_command = ["ansible-playbook", "../playbooks/env-check-typo3-project.yaml", "--extra-vars", f"ansible_ssh_pass={user_pass} ansible_sudo_pass={user_pass}" , "-v"]
+playbook_command = ["ansible-playbook",
+                    "../playbooks/env-check-typo3-project.yaml",
+                    "--extra-vars", f"ansible_ssh_pass={user_pass} ansible_sudo_pass={user_pass}",
+                    "-e",f"php_version={php_version} composer_version={composer_version} ",
+                    "-v"]
 
 try:
     subprocess.run(playbook_command, check=True)

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import subprocess
 import argparse
 import sys
@@ -31,4 +33,6 @@ if __name__ == "__main__":
     project_version = args.version
     project_path = args.path
 
-    create_typo3_project(project_name, project_version, project_path)
+    project_path_ptoject = project_path+'/'+project_name
+
+    create_typo3_project(project_name, project_version, project_path_ptoject )

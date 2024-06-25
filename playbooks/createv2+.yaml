@@ -20,7 +20,7 @@
         - unzip
 
     - name: Download and install TYPO3 via Composer
-      command: "{{ composer_path }} create-project typo3/cms-base-distribution:^{{ project_version }} {{ project_path }}/{{ project_name }}"
+      command: "{{composer_path}} create-project typo3/cms-base-distribution:^{{ project_version }} {{ project_path }}/{{ project_name }}"
       become: yes
       args:
         creates: "{{ project_path }}/{{ project_name }}/composer.json"

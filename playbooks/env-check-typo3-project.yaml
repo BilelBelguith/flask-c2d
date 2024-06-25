@@ -4,7 +4,7 @@
   become: yes
 
   vars:
-    typo3_requirements: "{{ lookup('file', './requirements') }}" 
+    typo3_requirements: "{{ lookup('file', './requirements_typo3') }}" 
    
   tasks:
 
@@ -34,26 +34,27 @@
         update_cache: yes
       when: add_repo_result.changed
    
-    - name: Install PHP 
+
+
+    - name: Install PHP
       package:
-        name: "{{ item }}"
-        state: present
-      become : yes
+         name: "{{ php_version }}"
+         state: present
+      become: yes
       become_user: root
-      loop: "{{ typo3_requirements.php.split(',') }}"
-      when: php_check.rc != 0  
-      #or  php_version.stdout != typo3_requirements.php
+      when: php_check.rc != 0
+
 
     - name: Install required PHP extensions
       package:
-        name: "{{typo3_requirements.php}}-{{item}}"
-        state: present
+         name: "{{php_version}}-{{item}}"
+         state: present
       loop: "{{ typo3_requirements.extensions }}"
-      #when: item not in typo3_requirements.extensions
+       #when: item not in typo3_requirements.extensions
 
     - name: Create symbolic link for PHP
       ansible.builtin.file:
-        src: /usr/bin/{{typo3_requirements.php}}
+        src: /usr/bin/{{php_version}}
         dest: /usr/bin/php
         state: link
         force: yes
@@ -65,13 +66,13 @@
       when: composer_check.rc != 0
 
     - name: Run Composer Installer
-      command: "{{typo3_requirements.php}} /tmp/composer-setup.php --version {{ typo3_requirements.composer}} --install-dir=/usr/local/bin --filename=composer"
+      command: "{{php_version}} /tmp/composer-setup.php --version {{ composer_version}} --install-dir=/usr/local/bin --filename=composer"
       become: yes
       become_user: root
       when: composer_check.rc != 0 
 
     - name: Update Composer 
-      command: composer self-update {{ typo3_requirements.composer }}
+      command: composer self-update {{ composer_version }}
       when: not composer_check.rc 
 
 #    - name: Display TYPO3 dependency check status

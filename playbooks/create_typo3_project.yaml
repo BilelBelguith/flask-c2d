@@ -1,0 +1,137 @@
+---
+- name: Install and configure TYPO3 with Composer
+  hosts: web_servers
+  become: yes
+
+  vars:
+    project_path: /var/www/html
+    project_name: testtypo3
+    project_version: 11
+    composer_path: /usr/local/bin/composer
+    web_server: apache # Can be 'apache' or 'nginx'
+    domain_name: typo3ansible.tn
+    php_version: php8.1
+
+  tasks:
+    - name: Install required packages for both Apache and Nginx
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - unzip
+        - certbot
+        - python3-certbot-apache
+        - python3-certbot-nginx
+
+    - name: Install Apache
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - apache2
+        - libapache2-mod-php
+      when: web_server == 'apache'
+    
+    - name: Enable Apache modules
+      command: a2enmod {{ item }}
+      loop:
+        - proxy
+        - proxy_fcgi
+      become: yes
+      notify:
+        - Reload Apache
+      when: web_server == 'apache'
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+      when: web_server == 'nginx'
+      
+   # - name: Download and install TYPO3 via Composer
+   #   script: "../scripts/create_typo3_script.py -n {{ project_name }} -v {{ project_version }} -p {{ project_path }}"
+   #   become: yes
+   #   #command: "{{composer_path}} create-project typo3/cms-base-distribution:^{{ project_version }} {{ project_path }}/{{ project_name }}"
+      
+    - name: Download and install TYPO3 via Composer
+      command: "composer create-project typo3/cms-base-distribution:^{{ project_version }} {{ project_path }}/{{ project_name }}"
+      become: yes
+      environment:
+        COMPOSER_ALLOW_SUPERUSER: 1
+      #args:
+      #  creates: "{{ project_path }}/{{ project_name }}/composer.json"
+
+
+    - name: Set ownership and permissions for Apache
+      file:
+        path: "{{ project_path }}/{{ project_name }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: yes
+      when: web_server == 'apache'
+      become: yes
+
+    - name: Set ownership and permissions for Nginx
+      file:
+        path: "{{ project_path }}/{{ project_name }}"
+        state: directory
+        owner: nginx
+        group: nginx
+        recurse: yes
+      when: web_server == 'nginx'
+      become: yes
+
+
+    - name: Configure Apache virtual host
+      template:
+        src: "../templates/apache_vhost.conf.j2"
+        dest: "/etc/apache2/sites-available/{{domain_name}}.conf"
+      when: web_server == 'apache'
+      notify: 
+        - Reload Apache
+
+    - name: Configure Nginx virtual host
+      template:
+        src: "../templates/nginx_vhost.conf.j2"
+        dest: "/etc/nginx/conf.d/{{domain_name}}.conf"
+      when: web_server == 'nginx'
+      notify:
+        - Reload Nginx
+
+    - name: Enable Apache site
+      command: a2ensite {{ domain_name }}.conf
+      when: web_server == 'apache'
+
+
+
+#    - name: Obtain SSL certificate for Apache
+#      command: certbot --apache -d {{ domain_name }} --non-interactive --agree-tos -m webmaster@{{ domain_name }}
+#      when: web_server == 'apache'
+#
+#    - name: Obtain SSL certificate for Nginx
+#      command: certbot --nginx -d {{ domain_name }} --non-interactive --agree-tos -m webmaster@{{ domain_name }}
+#      when: web_server == 'nginx'
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+      when: web_server == 'apache'
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+      when: web_server == 'nginx'
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
