@@ -73,7 +73,7 @@
                       
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+                        <button type="button" class="btn btn-primary" id="nextButton" href="/env-cnx">Next</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -413,6 +413,10 @@
         
         
             function runScript() {
+
+               
+
+
               var token = document.getElementById('token').value;
               var url = document.getElementById('url').value;
               var projectTitle = document.getElementById('projectTitle').value;
@@ -420,9 +424,9 @@
               var versionProject = document.getElementById('versionProject').value ;
               var typeProject = document.getElementById('typeProject').value;
         
-              localStorage.setItem("PT", projectTitle);
-              localStorage.setItem("VP", versionProject);
-              localStorage.setItem("PTY", typeProject);
+              localStorage.setItem("project-title", projectTitle);
+              localStorage.setItem("project-version", versionProject);
+              localStorage.setItem("project-type", typeProject);
         
         
         
@@ -460,6 +464,12 @@
                     const modalBodyContent = `Your project is successfully created.<br>URL: <a href="${url}/${group}/${projectTitle}" target="_blank">${url}/${group}/${projectTitle}</a>`;
                 document.getElementById('modal-body-content').innerHTML = modalBodyContent;
 
+
+                var git_url = `${url}/${group}/${projectTitle}`
+                console.log(git_url)
+                localStorage.setItem("git-url", git_url);
+
+
                 const nextButton = document.getElementById('nextButton');
                             nextButton.onclick = function() {
                             window.location.href = '/env-cnx'; // Replace with your next page URL
@@ -475,7 +485,7 @@
                     //window.location.href = '/ssh_implement';
         
                   } else {
-                    alert(`Error: ${data.output}`);
+                    toastr.error(`Error: ${data.output}`);
                     //window.location.href = '/ssh_implement';
                   }
                 })
@@ -524,9 +534,15 @@
             }
              
           function getdata(){
+
+         
+
+
           var gitLabUrl = document.getElementById('url').value;
           var gitLabToken = document.getElementById('token').value;
           async function testGitLabConnection() {
+            
+           
                 try {
                     const response = await fetch(`${gitLabUrl}/api/v4/user?private_token=${gitLabToken}`);
                     

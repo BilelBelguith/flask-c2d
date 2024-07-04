@@ -29,9 +29,15 @@
 
         <!-- Template Stylesheet -->
         <link href="static/css/style.css" rel="stylesheet">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     </head>
     <style>
-
+   input {
+    
+    color: black !important; /* Set to your desired color */
+}
         small {
 
             color: #1842b6 !important; 
@@ -175,20 +181,62 @@
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary mt-3 col-lg-12" style="color: #26d48c;" onclick="test_ssh()">Test SSH Connection</button>
-                      
-                        <div class="form-group col-lg-3 mt-3">
+                    <div class="row">
+                        <div class="form-group col-lg-4 mt-3">
                             <label for="php-version">PHP Version</label>
                             <select class="form-control" id="php-version">
                                 <option value="" disabled selected>Select PHP Version</option>
                             </select>
                         </div>
-                        <div class="form-group col-lg-3 mt-3">
+                        <div class="form-group col-lg-4 mt-3">
                             <label for="composer-version">Composer Version</label>
                             <select class="form-control" id="composer-version">
                                 <option value="" disabled selected>Select Version</option>
                             </select>
                         </div>
+                        <div class="form-group col-lg-4 mt-3">
+                            <label for="web_server">Web Server</label>
+                            <select class="form-control" id="web_server">
+                                <option value="" disabled selected>Web Server</option>
+                            </select>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="form-group col-lg-4 mt-3">
+                            <label for="project-path">Project Path</label>
+                            <input type="text" class="form-control" id="project-path" placeholder="/var/www/html">
+                        </div>
+                        <div class="form-group col-lg-4 mt-3">
+                            <label for="folder-name">Folder Name</label>
+                            <input type="text" class="form-control" id="folder-name" placeholder="Porject X">
+                        </div>
+                        <div class="form-group col-lg-4 mt-3">
+                            <label for="project-version">Project Version</label>
+                            <input type="text" class="form-control" id="project-version" placeholder="xx.x">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="form-group col-lg-8 mt-3">
+                        <label for="project-dns">DNS For the project</label>
+                        <input type="text" class="form-control" id="project-dns" placeholder="projectx.com">
+                    </div>
+                    <div class="form-group col-lg-4 mt-3">
+                        <label style="padding-top: 15px;" >The DNS must be well configured , local dns or available on internet </label>
+                       
+                    </div>
+
+                    <div class="form-group col-lg-8 mt-3">
+                        <label for="git-url-input">Git URL</label>
+                        <input type="text" class="form-control" id="git-url-input" placeholder="https://github.com/user/repo.git">
+                    </div>
+                    <div class="form-group col-lg-4 mt-3">
+                        <label style="padding-top: 15px;" >This Url automatically generated while creating your git project </label>     
+                    </div>
+
+                   
+                  </div>
                         <button type="button" class="btn btn-primary mt-3 col-lg-12" style="color: #26d48c;" onclick="">Create Project</button>
                     </form>
                 </div>
@@ -284,7 +332,7 @@ function test_ssh(){
 
 
     if (!username || !hostname || !port || !password) {
-                alert("Please fill in all the field to test connexion.");
+        toastr.error("Please fill in all the field to test connexion.");
                 return;
               }
 
@@ -306,14 +354,14 @@ fetch('/test_ssh' , {
     spinner.classList.remove('show');
     
     if (data.output && data.output.trim() === 'OK') {
-        alert('SSH connection successful')
+        toastr.success('SSH connection successful')
     }else{
-        alert(`Error: ${data.output}`);
+        toastr.error(`Error: ${data.output}`);
     }
     
 }).catch(error => {
                   console.error('Error:', error);
-                  alert('An error occurred. Please check the console for details.');
+                  toastr.error('An error occurred. Please check the console for details.');
         
                   spinner.classList.remove('show');
                 });
@@ -344,16 +392,53 @@ function load_versions(){
 
 
         var composerVersionSelect = document.getElementById('composer-version');
-        composerVersionSelect.innerHTML = '<option value="">Composer Version</option>'; // Clear previous options
+        composerVersionSelect.innerHTML = '<option value="">Composer Version </option>'; // Clear previous options
         data.composer_versions.forEach(version => {
             var option = document.createElement('option');
             option.value = version;
             option.textContent = version;
             composerVersionSelect.appendChild(option);
         });
+
+        var composerVersionSelect = document.getElementById('web_server');
+        composerVersionSelect.innerHTML = '<option value="">Web Server</option>'; 
+        data.web_servers.forEach(version => {
+            var option = document.createElement('option');
+            option.value = version;
+            option.textContent = version;
+            composerVersionSelect.appendChild(option);
+        });
+
     }).catch(error => {
         console.error('Error loading versions:', error);
-        alert('Failed to load versions. Please check the console for details.');
+        toastr.error('Failed to load versions. Please check the console for details.');
     });
 }
+</script>
+
+<script>
+  
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var gitUrlInput = document.getElementById('git-url-input');
+        var projectversioninput = document.getElementById('project-version')
+        var projectnameinput = document.getElementById('folder-name')
+
+        var versionproject = localStorage.getItem("project-version")
+        var nameproject = localStorage.getItem("project-title")
+        var urlgit = localStorage.getItem("git-url");
+        console.log(urlgit);
+        if (urlgit) {
+                gitUrlInput.value = urlgit;
+            }
+
+        if (nameproject){
+            projectnameinput.value = nameproject;
+        }
+
+        if (versionproject){
+            projectversioninput.value = versionproject;
+        }
+    });
 </script>
