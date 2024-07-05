@@ -329,7 +329,7 @@ function test_ssh(){
     var hostname = document.getElementById('host').value;
     var port = document.getElementById('port').value;
     var password = document.getElementById('password').value;
-
+    console.log (hostname , port , username , password)
 
     if (!username || !hostname || !port || !password) {
         toastr.error("Please fill in all the field to test connexion.");
@@ -347,9 +347,10 @@ fetch('/test_ssh' , {
     headers:{
         'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: `host=${hostname}&port=${port}&username=${username}&password=${password}`,
+    body: `host=${hostname}&port=${port}&username=${username}&password=${encodeURIComponent(password)}`,
 }).then(response => response.json())
   .then(data => {
+   
     console.log('Response Data:', data);
     spinner.classList.remove('show');
     

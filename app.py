@@ -79,9 +79,13 @@ def add_users():
 @app.route('/test_ssh', methods=['POST'])
 def test_ssh():
     host = request.form.get('host')
+    print(f"{host=}")
     port = request.form.get('port')
+    print(f"{port=}")
     username = request.form.get('username')
+    print(f"{username=}")
     password = request.form.get('password')
+    print(f"{password=})")
 
     script_path = os.path.join(os.path.dirname(__file__), 'scripts','test_ssh_con.py')
     try:
