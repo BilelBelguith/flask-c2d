@@ -125,13 +125,40 @@ def get_versions():
     return jsonify({"php_versions": php_versions, "composer_versions": composer_versions , "web_servers" : web_servers})
 
 
+   
 
 
 
+@app.route('/env_check', methods=['POST'])
+def env_check():
+    host = request.form.get('host')
+    port = request.form.get('port')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    php = request.form.get('php-version')
+    composer = request.form.get('composer-version')
+    project_path = request.form.get('path')
+    project_name = request.form.get('name')
+    project_version=request.form.get('version')
+    web_server = request.form.get('webserver')
+    dns= request.form.get('dns')
 
+    script_path = os.path.join(os.path.dirname(__file__), 'scripts','connect_env_check.py')
+    try:
+        try:
+            result = subprocess.run(
+                [ script_path, '-s', host, '-u', username, '-p', password, '-d', port , '--php' ,php , '--composer' , composer , '--path' , project_path , '--name' , project_name , '--projectversion' , project_version , '--webserver' , web_server , '--dns' , dns ],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            output = result.stdout
+        except subprocess.CalledProcessError as e:
+            output = f"Error: {e.stderr}"
 
-
-
+        return jsonify({'output': output})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 

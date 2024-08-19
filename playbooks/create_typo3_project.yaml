@@ -3,14 +3,14 @@
   hosts: web_servers
   become: yes
 
-  vars:
-    project_path: /var/www/html #cbon
-    project_name: zomri #cbon mel gilabform
-    project_version: 11 #cbon mel gitlab form 
-    composer_path: /usr/local/bin/composer # noo need 
-    web_server: apache # cbon
-    domain_name: zomri.tn
-    php_version: php8.1 #c bon
+  #vars:
+  #  project_path: /var/www/html #cbon
+  #  project_name: zomri #cbon mel gilabform
+  #  project_version: 11 #cbon mel gitlab form 
+  #  composer_path: /usr/local/bin/composer # noo need 
+  #  web_server: apache # cbon
+  #  domain_name: zomri.tn
+  #  php_version: php8.1 #c bon
 
   tasks:
     - name: Install required packages for both Apache and Nginx
