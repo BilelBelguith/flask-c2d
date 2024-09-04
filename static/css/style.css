@@ -306,6 +306,11 @@
     background-size: cover;
 }
 
+.page-header-db {
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 40, 216, 0.384)), url(../img/database.jpeg) center center no-repeat;
+    background-size: cover;
+}
+
 .page-header .breadcrumb-item+.breadcrumb-item::before {
     color: var(--bs-white);
 }

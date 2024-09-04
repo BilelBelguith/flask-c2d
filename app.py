@@ -31,7 +31,9 @@ def gitlab():
 def envcnx():
     return render_template('conex-env.html')
 
-
+@app.route('/db-creation')
+def db_creation():
+    return render_template('db-creation.html')
 
 @app.route('/run_script', methods=['POST'])
 def run_script():
