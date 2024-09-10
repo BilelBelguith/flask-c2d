@@ -181,38 +181,18 @@
    
         <div class="p-5 rounded">
             <div class="text-center">
-                <h1 class="text-primary mb-4">Connect And Create DB Form</h1>
+                <h1 class="text-primary mb-4">Create DB Form</h1>
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-7">
                     <form id="setenvForm">
-                        <div class="row">
-                            <div class="form-group col-lg-3">
-                                <label for="user">User Name</label>
-                                <input type="text" class="form-control" id="user" placeholder="user01">
-                                
-                            </div>
-                            
-                            <div class="form-group col-lg-3">
-                                <label for="host">Host Name</label>
-                                <input type="text" class="form-control" id="host" placeholder="Enter your host 0.0.0.0">
-                            </div>
-                            <div class="form-group col-lg-3">
-                                <label for="port">Port Number</label>
-                                <input type="text" class="form-control" id="port" placeholder="Enter port number">
-                            </div>
-                            <div class="form-group col-lg-3">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" placeholder="Enter password">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary mt-3 col-lg-12" style="margin-bottom: 1cm; color: #26d48c;" onclick="test_ssh()">Test SSH Connection</button>
+
 
 
                      <div class="row">
                         <div class="form-group col-lg-6">
                             <label for="mysql-host">Mysql Host</label>
-                            <input type="text" class="form-control" id="mysql-host" placeholder="localhost OR host of container">
+                            <input type="text" class="form-control" id="mysql-host" placeholder="host of mysql service">
                         </div>
                         
                         <div class="form-group col-lg-6">
@@ -229,18 +209,18 @@
                             <input type="text" class="form-control" id="mysql-password" placeholder="root password">
                         </div>
 
-                        <br><br><br>
+                        <br><br><br>    <br>
 
                         <div class="form-group col-lg-4">
-                            <label for="db-name">DB Name</label>
+                            <label for="db-name">New DB Name</label>
                             <input type="text" class="form-control" id="db-name" placeholder="database01">
                         </div>
                         <div class="form-group col-lg-4">
-                            <label for="db-user">DB User</label>
-                            <input type="text" class="form-control" id="db-user" placeholder="uesr01">
+                            <label for="db-user">New DB User</label>
+                            <input type="text" class="form-control" id="db-user" placeholder="user01">
                         </div>
                         <div class="form-group col-lg-4">
-                            <label for="db-password">DB Password</label>
+                            <label for="db-password">User Password</label>
                             <input type="text" class="form-control" id="db-password" placeholder="Enter password">
                         </div>
 
@@ -405,90 +385,4 @@ fetch('/env_check' , {
 }  
 
 
-
-
-
-
-
-
-
-function test_ssh(){
-    var username = document.getElementById('user').value;
-    var hostname = document.getElementById('host').value;
-    var port = document.getElementById('port').value;
-    var password = document.getElementById('password').value;
-    
-    console.log (hostname , port , username , password)
-
-    if (!username || !hostname || !port || !password) {
-        toastr.error("Please fill in all the field to test connexion.");
-                return;
-              }
-
-
-var spinner = document.getElementById('spinner');
-spinner.classList.add('show');
-
-
-fetch('/test_ssh' , {
-
-    method: 'POST',
-    headers:{
-        'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `host=${hostname}&port=${port}&username=${username}&password=${encodeURIComponent(password)}`,
-}).then(response => response.json())
-  .then(data => {
-   
-    console.log('Response Data:', data);
-    spinner.classList.remove('show');
-    
-    if (data.output && data.output.trim() === 'OK') {
-        toastr.success('SSH connection successful')
-    }else{
-        toastr.error(`Error: ${data.output}`);
-    }
-    
-}).catch(error => {
-                  console.error('Error:', error);
-                  toastr.error('An error occurred. Please check the console for details.');
-        
-                  spinner.classList.remove('show');
-                });
-
-}  
-
-
-
-
-
-
-
-</script>
-
-<script>
-  
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        var gitUrlInput = document.getElementById('git-url-input');
-        var projectversioninput = document.getElementById('project-version')
-        var projectnameinput = document.getElementById('folder-name')
-
-        var versionproject = localStorage.getItem("project-version")
-        var nameproject = localStorage.getItem("project-title")
-        var urlgit = localStorage.getItem("git-url");
-        console.log(urlgit);
-        if (urlgit) {
-                gitUrlInput.value = urlgit;
-            }
-
-        if (nameproject){
-            projectnameinput.value = nameproject;
-        }
-
-        if (versionproject){
-            projectversioninput.value = versionproject;
-        }
-    });
 </script>
