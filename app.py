@@ -157,7 +157,6 @@ def env_check():
             output = result.stdout
         except subprocess.CalledProcessError as e:
             output = f"Error: {e.stderr}"
-
         return jsonify({'output': output})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -168,16 +167,21 @@ def env_check():
 
 @app.route('/mysql_creation', methods=['POST'])
 def mysql_creation():
-    host = request.form.get('host')
-    port = request.form.get('port')
-    username = request.form.get('username')
-    password = request.form.get('password')
+    host = request.form.get('mysqlhost')
+    port = request.form.get('mysqlport')
+    username = request.form.get('mysqlusername')
+    password = request.form.get('mysqlpassword')
+    database = request.form.get('database')
+    databaseuser = request.form.get('databaseuser')
+    userpass = request.form.get('userpass')
+    
+    
 
     script_path = os.path.join(os.path.dirname(__file__), 'scripts','setup_database_sql.py')
     try:
         try:
             result = subprocess.run(
-                [ script_path, '-s', host, '-u', username, '-p', password, '-d', port],
+                [ script_path, '-mh', host, '-mr', username, '-mrp', password, '-mp', port , '-db' , database , '-nu' , databaseuser , '-nup' , userpass],
                 capture_output=True,
                 text=True,
                 check=True

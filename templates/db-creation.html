@@ -196,8 +196,8 @@
                         </div>
                         
                         <div class="form-group col-lg-6">
-                            <label for="mysql-Port">Mysql Port</label>
-                            <input type="text" class="form-control" id="mysql-Port" placeholder="3306 is the default port for mysql ">
+                            <label for="mysql-port">Mysql Port</label>
+                            <input type="text" class="form-control" id="mysql-port" placeholder="3306 is the default port for mysql ">
                         </div>
                         <br><br><br>
                         <div class="form-group col-lg-6">
@@ -206,7 +206,7 @@
                         </div>
                         <div class="form-group col-lg-6">
                             <label for="mysql-password">Mysql Password</label>
-                            <input type="text" class="form-control" id="mysql-password" placeholder="root password">
+                            <input type="password" class="form-control" id="mysql-password" placeholder="root password">
                         </div>
 
                         <br><br><br>    <br>
@@ -225,7 +225,7 @@
                         </div>
 
                      </div>
-                     <button type="button" class="btn btn-primary mt-3 col-lg-12" style="margin-bottom: 1cm; color: #26d48c;" onclick="">Create Mysql Database</button>
+                     <button type="button" class="btn btn-primary mt-3 col-lg-12" style="margin-bottom: 1cm; color: #26d48c;" onclick="mysql_creation()">Create Mysql Database</button>
 
 
                    
@@ -318,69 +318,49 @@
 </html>
 
 <script>
-function ssh_env_check(){
-    var username = document.getElementById('user').value;
-    var hostname = document.getElementById('host').value;
-    var port = document.getElementById('port').value;
-    var password = document.getElementById('password').value;
-    var php = document.getElementById('php-version').value
-    var composer = document.getElementById('composer-version').value
-    var path = document.getElementById('project-path').value
-    var name = document.getElementById('folder-name').value
-    var version = document.getElementById('project-version').value
-    var web_server = document.getElementById('web_server').value
-    var dns = document.getElementById('project-dns').value
-
-  
-    
-    console.log (hostname , port , username , password ,dns , web_server)
+function mysql_creation(){
+    var username = document.getElementById('mysql-user').value;
+    var hostname = document.getElementById('mysql-host').value;
+    var port = document.getElementById('mysql-port').value;
+    var password = document.getElementById('mysql-password').value;
+    var newdatabase = document.getElementById('db-name').value;
+    var newuser = document.getElementById('db-user').value;
+    var newuserpass = document.getElementById('db-password').value;   
+    //console.log (hostname , port , username , password ,dns , web_server)
+    console.log(password , newuserpass)
 
 
+//var spinner = document.getElementById('spinner');
+//spinner.classList.add('show');
 
-var spinner = document.getElementById('spinner');
-spinner.classList.add('show');
-
-
-fetch('/env_check' , {
+var encodedNewUserPass = encodeURIComponent(newuserpass).replace(/\+/g, '%2B');
+fetch('/mysql_creation' , {
 
     method: 'POST',
     headers:{
         'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: `host=${hostname}&port=${port}&username=${username}&password=${encodeURIComponent(password)}&php-version=${php}&composer-version=${composer}&path=${path}&name=${name}&version=${version}&webserver=${web_server}&dns=${dns}`,
+    body: `mysqlhost=${hostname}&mysqlport=${port}&mysqlusername=${username}&mysqlpassword=${encodeURIComponent(password)}&database=${newdatabase}&databaseuser=${newuser}&userpass=${encodedNewUserPass}`,
 }).then(response => response.json())
   .then(data => {
     console.log(data.output)
 
     // console.log('Response Data:', data);
-    spinner.classList.remove('show');
-    if (data.output && data.output.includes("OK")) {
-        toastr.success('Your Project is Created')
-        const modalBodyContent = `Your project is successfully created.<br>URL: <a href= "http://${dns}" target="_blank">${dns}</a>`;
-                document.getElementById('modal-body-content').innerHTML = modalBodyContent;
-            
-                const nextButton = document.getElementById('nextButton');
-                            nextButton.onclick = function() {
-                            window.location.href = '/jenkins'; // Replace with your next page URL
-                            };
-
-                    const notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
-                    notificationModal.show();
-
-
-                    localStorage.clear();
+    //spinner.classList.remove('show');
+    //if (data.output && data.output.includes("OK")) {
+    //    toastr.success('database Created')
 
  
-            }else{
-        toastr.error(`Error: ${data.output}`);
-    }
+     //       }else{
+     //   toastr.error(`Error: ${data.output}`);
+  //  }
     
-}).catch(error => {
-                  console.error('Error:', error);
-                  toastr.error('An error occurred. Please check the console for details.');
+//}).catch(error => {
+  //                console.error('Error:', error);
+    //              toastr.error('An error occurred. Please check the console for details.');
         
-                  spinner.classList.remove('show');
-                });
+     //             spinner.classList.remove('show');
+               });
 
 }  
 
