@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import paramiko
 import argparse
 
@@ -62,12 +64,12 @@ def create_mysql_user_and_db(ssh_host, ssh_port, ssh_user, ssh_password, mysql_h
             elif "Access denied" in filtered_error:
                 print("Error: Access denied. Please check the MySQL root credentials.")
             elif "CREATE USER failed" in filtered_error:
-                print(f"Error: User '{new_user}' already exists. Skipping user creation.")
+                print(f"Error: User '{new_user}' already exists. Skipping user creation and Database '{new_db_name}' created successfully")
 
             else:
                 print(f"Error: {filtered_error}")
         else:
-            print(f"Database '{new_db_name}' and user '{new_user}' created successfully with all privileges.")
+            print(f"Database '{new_db_name}' and user '{new_user}' created successfully with all privileges. {new_user_password}")
 
     except paramiko.SSHException as ssh_error:
         print(f"SSH Error: {ssh_error}")
