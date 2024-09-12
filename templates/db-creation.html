@@ -330,8 +330,8 @@ function mysql_creation(){
     console.log(password , newuserpass)
 
 
-//var spinner = document.getElementById('spinner');
-//spinner.classList.add('show');
+var spinner = document.getElementById('spinner');
+spinner.classList.add('show');
 
 var encodedNewUserPass = encodeURIComponent(newuserpass).replace(/\+/g, '%2B');
 fetch('/mysql_creation' , {
@@ -346,20 +346,20 @@ fetch('/mysql_creation' , {
     console.log(data.output)
 
     // console.log('Response Data:', data);
-    //spinner.classList.remove('show');
-    //if (data.output && data.output.includes("OK")) {
-    //    toastr.success('database Created')
+    spinner.classList.remove('show');
+    if (data.output.includes("Error")) {
+        toastr.error(data.output)
 
  
-     //       }else{
-     //   toastr.error(`Error: ${data.output}`);
-  //  }
+        }else{
+       toastr.success(data.output);
+    }
     
-//}).catch(error => {
-  //                console.error('Error:', error);
-    //              toastr.error('An error occurred. Please check the console for details.');
+}).catch(error => {
+                  console.error('Error:', error);
+                  toastr.error('An error occurred. Please check the console for details.');
         
-     //             spinner.classList.remove('show');
+               spinner.classList.remove('show');
                });
 
 }  

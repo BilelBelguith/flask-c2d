@@ -64,7 +64,7 @@ def create_mysql_user_and_db(ssh_host, ssh_port, ssh_user, ssh_password, mysql_h
             elif "Access denied" in filtered_error:
                 print("Error: Access denied. Please check the MySQL root credentials.")
             elif "CREATE USER failed" in filtered_error:
-                print(f"Error: User '{new_user}' already exists. Skipping user creation and Database '{new_db_name}' created successfully")
+                print(f"User '{new_user}' already exists. Skipping user creation and Database '{new_db_name}' created successfully")
 
             else:
                 print(f"Error: {filtered_error}")
