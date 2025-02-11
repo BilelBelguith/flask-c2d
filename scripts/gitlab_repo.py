@@ -6,10 +6,7 @@ import os
 from github import Github
 from os import walk
 import gitlab
-# Z99fC_AcdaLpjezbG-hc
-# U_AKMhSjFVygKgnDUW9a
-# https://git.softtodo.tn
-# Devops
+
 parser = argparse.ArgumentParser(description='create new Gitlab Repository')
 
 parser.add_argument('-t', '--token', dest='token',

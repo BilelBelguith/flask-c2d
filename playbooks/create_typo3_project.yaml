@@ -104,7 +104,10 @@
       when: web_server == 'apache'
 
 
-
+    - name: create FIRst_ISNTALL folder
+      file:
+        path: "{{ project_path }}/{{ project_name }}/public/FIRST_INSTALL"
+        state: touch
 #    - name: Obtain SSL certificate for Apache
 #      command: certbot --apache -d {{ domain_name }} --non-interactive --agree-tos -m webmaster@{{ domain_name }}
 #      when: web_server == 'apache'

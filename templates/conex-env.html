@@ -75,7 +75,7 @@
                       
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="nextButton" href="/env-cnx">Next</button>
+                        <button type="button" class="btn btn-primary" id="nextButton" href="/db-creation">Create database</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -395,7 +395,7 @@ fetch('/env_check' , {
             
                 const nextButton = document.getElementById('nextButton');
                             nextButton.onclick = function() {
-                            window.location.href = '/jenkins'; // Replace with your next page URL
+                            window.location.href = '/db-creation'; // Replace with your next page URL
                             };
 
                     const notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
