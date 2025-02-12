@@ -328,7 +328,12 @@ function mysql_creation(){
     var newuserpass = document.getElementById('db-password').value;   
     //console.log (hostname , port , username , password ,dns , web_server)
     console.log(password , newuserpass)
+    
+    if (!username || !hostname || !port || !password || !newdatabase || !newuser || !newuserpass ) {
 
+        toastr.error("Please fill in all the field.");
+    return;
+    }
 
 var spinner = document.getElementById('spinner');
 spinner.classList.add('show');
@@ -347,7 +352,7 @@ fetch('/mysql_creation' , {
 
     // console.log('Response Data:', data);
     spinner.classList.remove('show');
-    if (data.output.includes("Error")) {
+    if (data.output.includes("Error") || data.output.includes("error")) {
         toastr.error(data.output)
 
  
